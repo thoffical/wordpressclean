@@ -1,4 +1,7 @@
 <?php
+// CHANGE THIS
+$site = "https://yoursite.com";
+
 // Force HTTPS
 if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') {
     exit("HTTPS required");
@@ -14,23 +17,30 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 $user = $_SERVER['PHP_AUTH_USER'];
 $pass = $_SERVER['PHP_AUTH_PW'];
 
-$site = "https://yoursite.com";
 $endpoint = $_GET['endpoint'] ?? '';
 
-// ✅ Whitelist only what you need
+// Only allow what we need
 $allowed = [
     'wp/v2/posts',
     'wp/v2/pages',
-    'wp/v2/plugins',
-    'wp/v2/themes'
 ];
 
-if (!in_array($endpoint, $allowed)) {
+$allowed_single = [
+    'wp/v2/posts/',
+    'wp/v2/pages/',
+];
+
+$ok = in_array($endpoint, $allowed);
+foreach ($allowed_single as $a) {
+    if (strpos($endpoint, $a) === 0) $ok = true;
+}
+
+if (!$ok) {
     http_response_code(403);
     exit("Blocked endpoint");
 }
 
-$url = $site . "/wp-json/" . $endpoint;
+$url = $site . "/wp-json/" . $endpoint . "?context=edit";
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
