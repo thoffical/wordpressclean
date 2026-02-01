@@ -1,0 +1,8 @@
+{
+  "name": "WPCLEAN",
+  "short_name": "WP Admin",
+  "start_url": "index.php",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}
